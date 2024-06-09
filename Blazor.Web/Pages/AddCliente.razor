@@ -1,0 +1,70 @@
+﻿@page "/add-cliente"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Agregar Nuevo Cliente</PageTitle>
+
+<h1>Agregar Nuevo Cliente</h1>
+
+<EditForm Model="@cliente" OnValidSubmit="SaveUser">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="PrimerApellido" class="form-label">Primer Apellido</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="cliente.PrimerApellido" />
+        </div>
+        <ValidationMessage For="@(() => cliente.PrimerApellido)" />
+    </div>
+    <div class="mb-3">
+        <label for="CuentaBanco" class="form-label">Cuenta Banco</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="cliente.CuentaBanco" />
+        </div>
+        <ValidationMessage For="@(() => cliente.CuentaBanco)" />
+    </div>
+    <div class="mb-3">
+        <label for="Direccion" class="form-label">Direccion</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="cliente.Direccion" />
+        </div>
+        <ValidationMessage For="@(() => cliente.Direccion)" />
+    </div>
+    <div class="mb-3">
+        <label for="Telefono" class="form-label">Telefono</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="cliente.Telefono" />
+        </div>
+        <ValidationMessage For="@(() => cliente.Telefono)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+
+@code {
+
+    protected ClienteEntity cliente = new();
+
+    protected async Task SaveUser()
+    {
+        string apiUrl = "https://localhost:7172/api/clientes/post-cliente";
+
+
+        if (cliente.PrimerApellido == null)
+        {
+            return;
+        }
+
+        await Http.PostAsJsonAsync(apiUrl, cliente);
+        NavigationManager.NavigateTo("/clientes-list");
+    }
+
+    protected async Task Cancel()
+    {
+        NavigationManager.NavigateTo("/add");
+    }   
+}

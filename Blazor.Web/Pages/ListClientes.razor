@@ -1,0 +1,77 @@
+﻿@page "/clientes-list"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Clientes</PageTitle>
+
+<h1>Lista de Clientes</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>idCliente</th>
+                <th>PrimerApellido</th>
+                <th>CuentaBanco</th>
+                <th>Direccion</th>
+                <th>Telefono</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var std in clientesLists)
+        {
+            <tr>
+                <td>@std.idCliente</td>
+                <td>@std.PrimerApellido</td>
+                <td>@std.CuentaBanco</td>
+                <td>@std.Direccion</td>
+                <td>@std.Telefono</td>
+                <td>
+                    <button type="button" @onclick="(async () => await NavigateToUpdateCliente(std.idCliente))" class="btn btn-primary">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                    <button type="button" @onclick="(async () => await DeleteCliente(std.idCliente))" class="btn btn-danger">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+@code {
+    protected List<ClienteEntity> clientesLists = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetClientesList();
+    }
+
+    protected async Task GetClientesList()
+    {
+        string apiUrl = "https://localhost:7172/api/clientes/get-clientes-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        clientesLists = JsonConvert.DeserializeObject<List<ClienteEntity>>(responseBodyJson);
+    }
+
+    protected async Task DeleteCliente(int idCliente)
+    {
+        string apiUrl = "https://localhost:7172/api/clientes/delete-cliente/" + idCliente;
+
+        await Http.DeleteAsync(apiUrl);
+
+        NavigationManager.NavigateTo("/add"); // te lleva a add
+    }
+
+    protected async Task NavigateToUpdateCliente(int idCliente)
+    {
+        string pageURl = "update-cliente/" + idCliente;
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+}

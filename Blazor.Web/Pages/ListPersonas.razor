@@ -1,0 +1,75 @@
+﻿@page "/personas-list"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Personas</PageTitle>
+
+<h1>Lista de Personas</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>idPersona</th>
+                <th>CI</th>
+                <th>Nombre</th>
+                <th>Telefono</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var std in personasLists)
+        {
+            <tr>
+                <td>@std.idPersona</td>
+                <td>@std.CI</td>
+                <td>@std.Nombre</td>
+                <td>@std.Telefono</td>
+                <td>
+                    <button type="button" @onclick="(async () => await NavigateToUpdatePersona(std.idPersona))" class="btn btn-primary">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                    <button type="button" @onclick="(async () => await DeletePersona(std.idPersona))" class="btn btn-danger">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+@code {
+    protected List<PersonaEntity> personasLists = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPersonasList();
+    }
+
+    protected async Task GetPersonasList()
+    {
+        string apiUrl = "https://localhost:7172/api/personas/get-personas-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        personasLists = JsonConvert.DeserializeObject<List<PersonaEntity>>(responseBodyJson);
+    }
+
+    protected async Task DeletePersona(int idPersona)
+    {
+        string apiUrl = "https://localhost:7172/api/personas/delete-persona/" + idPersona;
+
+        await Http.DeleteAsync(apiUrl);
+
+        NavigationManager.NavigateTo("/add"); // va la pagina add
+    }
+
+    protected async Task NavigateToUpdatePersona(int idPersona)
+    {
+        string pageURl = "update-persona/" + idPersona;
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+}

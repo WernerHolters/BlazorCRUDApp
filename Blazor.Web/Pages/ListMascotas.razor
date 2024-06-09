@@ -1,0 +1,90 @@
+﻿@page "/mascotas-list"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Mascotas</PageTitle>
+
+<h1>Lista de Mascotas</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>idMascota</th>
+                <th>Nombre</th>
+                <th>Especie</th>
+                <th>Raza</th>
+                <th>Color</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Peso Actual</th>
+                <th>Dueño</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var std in mascotasLists)
+        {
+            <tr>
+                <td>@std.idMascota</td>
+                <td>@std.Nombre</td>
+                <td>@std.Especie</td>
+                <td>@std.Raza</td>
+                <td>@std.Color</td>
+                <td>@std.FechaNacimiento.ToShortDateString()</td>
+                <td>@std.PesoActual</td>
+                <td>@std.idCliente</td>
+                <td>
+                    <button type="button" @onclick="(async () => await NavigateToUpdateMascota(std.idMascota))" class="btn btn-primary">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                    <button type="button" @onclick="(async () => await DeleteMascota(std.idMascota))" class="btn btn-danger">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+@code {
+
+    protected List<MascotaEntity> mascotasLists = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetMascotasList();
+    }
+
+    protected async Task GetMascotasList()
+    {
+        string apiUrl = "https://localhost:7172/api/mascotas/get-mascotas-list"; // aqui llama a la API
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        mascotasLists = JsonConvert.DeserializeObject<List<MascotaEntity>>(responseBodyJson);
+    }
+
+    protected async Task DeleteMascota(int idMascota)
+    {
+        string apiUrl = "https://localhost:7172/api/mascotas/delete-mascota/" + idMascota;
+
+        await Http.DeleteAsync(apiUrl);
+
+        NavigationManager.NavigateTo("/add"); // te lleva a add
+    }
+
+    protected async Task NavigateToUpdateMascota(int idMascota)
+    {
+        string pageURl = "update-mascota/" + idMascota;         // si le das al boton te llava a UpdateMascota.razor
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+    /*============================================================*/
+    protected async Task GetClienteMascota(int idMascota)
+    {
+        string pageURl = "get-cliente-mascota/" + idMascota;
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+}

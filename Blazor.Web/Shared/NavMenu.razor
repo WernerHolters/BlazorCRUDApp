@@ -1,0 +1,56 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Blazor.Web</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="clientes-list">
+                <span class="oi oi-person" aria-hidden="true"></span>Clientes
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="personas-list">
+                <span class="oi oi-person" aria-hidden="true"></span>Personas
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="mascotas-list"> <!--https://icon-sets.iconify.design/fluent/animal-cat-28-filled/-->
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyOCIgaGVpZ2h0PSIyOCIgdmlld0JveD0iMCAwIDI4IDI4Ij48cGF0aCBmaWxsPSJ3aGl0ZSIgZD0iTTE3LjgwMiAyNkg2LjQ1NWE0LjQ1NiA0LjQ1NiAwIDAgMS0zLjI1Ny03LjQ5OWwxLjM4LTEuNDhhMy44OCAzLjg4IDAgMCAwLS4wOTItNS4zOTJMMy4xMyAxMC4yNzRhLjc1Ljc1IDAgMCAxIDEuMDYtMS4wNmwxLjM1NSAxLjM1NGE1LjM4IDUuMzggMCAwIDEgLjEyOSA3LjQ3N2wtMS4zOCAxLjQ4YTIuOTU4IDIuOTU4IDAgMCAwIDIuMTYgNC45NzVoLjk4OGMtLjAwNi0uMzctLjAwNi0uODUyLjAxMy0xLjQxM2MuMDQ0LTEuMzExLjE5LTMuMDc0LjYwMy00Ljg0OWMuNDEyLTEuNzY1IDEuMTAzLTMuNjAzIDIuMjc3LTUuMDEzYzEuMDYzLTEuMjc2IDIuNTEtMi4xODQgNC40MjctMi4zNzFWNS42NjlBMy42NyAzLjY3IDAgMCAxIDE4LjQzIDJhMS40OCAxLjQ4IDAgMCAxIDEuNDc5IDEuNDh2Ljk1MmgyLjE1MmMxLjEgMCAyLjEyMy41NyAyLjcwMyAxLjUwNmwuNzUzIDEuMjE2YzEuMjkgMi4wODItLjE1NiA0Ljc2MS0yLjU3IDQuODU3djExLjQxNUEyLjU3NCAyLjU3NCAwIDAgMSAyMC4zNzYgMjZoLTEuMDc0di0yLjU3NGE0LjM5NyA0LjM5NyAwIDAgMC00LjM5Ni00LjM5OWgtMS41MmEuNzUuNzUgMCAwIDAgMCAxLjVoMS41MmMxLjYgMCAyLjg5NyAxLjI5OCAyLjg5NyAyLjg5OXoiLz48L3N2Zz4=" alt="Animal">
+                Mascotas
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="huespedes-list">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyOCIgaGVpZ2h0PSIyOCIgdmlld0JveD0iMCAwIDUxMiA1MTIiPjxwYXRoIGZpbGw9IndoaXRlIiBkPSJNMjU2IDI3LjUyTDI1IDIxMi4zdjQxTDI1NiA2OC40OEw0ODcgMjUzLjN2LTQxem0wIDY0TDczIDIzNy45VjQ4N2g5NGMuMS0zMi4zLjgtNzkuNSAxMC4yLTEyMWM1LjItMjIuNyAxMi45LTQzLjkgMjUuNC02MGMxMi42LTE2LjIgMzAuNy0yNyA1My40LTI3czQwLjggMTAuOCA1My40IDI3YzEyLjUgMTYuMSAyMC4yIDM3LjMgMjUuNCA2MGM5LjQgNDEuNSAxMC4xIDg4LjcgMTAuMiAxMjFoOTRWMjM3Ljl6TTE2My45IDE5OC4yYTI1LjAzIDE0LjczIDE1LjA0IDAgMSAxMi4xIDIuMmEyNS4wMyAxNC43MyAxNS4wNCAwIDEgMTcuNyAxNC42aDEyNC42YTE0LjczIDI1LjAzIDc0Ljk2IDAgMSAxNy43LTE0LjZhMTQuNzMgMjUuMDMgNzQuOTYgMCAxIDEyLjEtMi4yYTE0LjczIDI1LjAzIDc0Ljk2IDAgMSAxNy44IDcuOGExNC43MyAyNS4wMyA3NC45NiAwIDEtMTMgMTkuNmEyNS4wMyAxNC43MyAxNS4wNCAwIDEgMTAuNyAxOC40YTI1LjAzIDE0LjczIDE1LjA0IDAgMS0yOS45IDUuN2EyNS4wMyAxNC43MyAxNS4wNCAwIDEtMTguMS0xNi43SDE5Ni40YTE0LjczIDI1LjAzIDc0Ljk2IDAgMS0xOC4xIDE2LjdhMTQuNzMgMjUuMDMgNzQuOTYgMCAxLTI5LjktNS43YTE0LjczIDI1LjAzIDc0Ljk2IDAgMSAxMC43LTE4LjRhMjUuMDMgMTQuNzMgMTUuMDQgMCAxLTEzLTE5LjZhMjUuMDMgMTQuNzMgMTUuMDQgMCAxIDE3LjgtNy44Ii8+PC9zdmc+" alt="Animal">
+                Huespedes
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="add">
+                <span class="oi oi-plus" aria-hidden="true"></span>Agregar
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

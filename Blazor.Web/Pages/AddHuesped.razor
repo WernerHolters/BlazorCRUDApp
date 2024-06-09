@@ -1,0 +1,69 @@
+﻿@page "/add-huesped"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Agregar Nuevo Huesped</PageTitle>
+
+<h1>Agregar Nuevo Huesped</h1>
+
+<EditForm Model="@huesped" OnValidSubmit="SaveUser">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="FechaIngreso" class="form-label">FechaIngreso</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="huesped.FechaIngreso" />
+        </div>
+        <ValidationMessage For="@(() => huesped.FechaIngreso)" />
+    </div>
+    <div class="mb-3">
+        <label for="FechaSalida" class="form-label">FechaSalida</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="huesped.FechaSalida" />
+        </div>
+        <ValidationMessage For="@(() => huesped.FechaSalida)" />
+    </div>
+    <div class="mb-3">
+        <label for="CostoHospedaje" class="form-label">CostoHospedaje</label>
+        <div class="col-md-4">
+            <InputNumber class="form-control" @bind-Value="huesped.CostoHospedaje" />
+        </div>
+        <ValidationMessage For="@(() => huesped.CostoHospedaje)" />
+    </div>
+    <div class="mb-3">
+        <label for="idMascota" class="form-label">idMascota</label>
+        <div class="col-md-4">
+            <InputNumber class="form-control" @bind-Value="huesped.idMascota" />
+        </div>
+        <ValidationMessage For="@(() => huesped.idMascota)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+
+@code {
+
+    protected HuespedEntity huesped = new();
+
+    protected async Task SaveUser()
+    {
+        string apiUrl = "https://localhost:7172/api/huespedes/post-huesped";
+
+        if (huesped.FechaSalida == null)
+        {
+            return;
+        }
+
+        await Http.PostAsJsonAsync(apiUrl, huesped);
+        NavigationManager.NavigateTo("/huespedes-list");
+    }
+
+    protected async Task Cancel()
+    {
+        NavigationManager.NavigateTo("/add");
+    }   
+}

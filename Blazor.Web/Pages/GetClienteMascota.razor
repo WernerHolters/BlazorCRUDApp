@@ -1,0 +1,102 @@
+﻿@page "/get-cliente-mascota/{idMascota:int}"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Cliente de la Mascota</PageTitle>
+
+<h1>Cliente de la Mascota</h1>
+
+<EditForm Model="@mascota" OnValidSubmit="UpdateUser">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Nombre" class="form-label">Nombre</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="mascota.Nombre" />
+        </div>
+        <ValidationMessage For="@(() => mascota.Nombre)" />
+    </div>
+    <div class="mb-3">
+        <label for="Especie" class="form-label">Especie</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="mascota.Especie" />
+        </div>
+        <ValidationMessage For="@(() => mascota.Especie)" />
+    </div>
+    <div class="mb-3">
+        <label for="Raza" class="form-label">Raza</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="mascota.Raza" />
+        </div>
+        <ValidationMessage For="@(() => mascota.Raza)" />
+    </div>
+    <div class="mb-3">
+        <label for="Color" class="form-label">Color</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="mascota.Color" />
+        </div>
+        <ValidationMessage For="@(() => mascota.Color)" />
+    </div>
+    <div class="mb-3">
+        <label for="FechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="mascota.FechaNacimiento" />
+        </div>
+        <ValidationMessage For="@(() => mascota.FechaNacimiento)" />
+    </div>
+    <div class="mb-3">
+        <label for="PesoActual" class="form-label">Peso Actual</label>
+        <div class="col-md-4">
+            <InputNumber class="form-control" @bind-Value="mascota.PesoActual" />
+        </div>
+        <ValidationMessage For="@(() => mascota.PesoActual)" />
+    </div>
+    <div class="mb-3">
+        <label for="idCliente" class="form-label">ID del Cliente</label>
+        <div class="col-md-4">
+            <InputNumber class="form-control" @bind-Value="mascota.idCliente" />
+        </div>
+        <ValidationMessage For="@(() => mascota.idCliente)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public int idMascota { get; set; }
+
+    protected MascotaEntity mascota = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        string apiUrl = "https://localhost:7172/api/mascotas/get-mascotas-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        var mascotasLists = JsonConvert.DeserializeObject<List<MascotaEntity>>(responseBodyJson);
+
+        mascota = mascotasLists.Where(x => x.idMascota == idMascota).FirstOrDefault();
+    }
+
+    protected async Task UpdateUser()
+    {
+        string apiUrl = "https://localhost:7172/api/mascotas/update-mascota";
+
+        if (mascota.idMascota < 1)
+        {
+            return;
+        }
+
+        await Http.PostAsJsonAsync(apiUrl, mascota);
+        NavigationManager.NavigateTo("/mascotas-list");
+    }
+
+    protected async Task Cancel() { }
+}

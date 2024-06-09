@@ -1,0 +1,81 @@
+﻿@page "/update-huesped/{idHuesped:int}"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Actualizar Huesped</PageTitle>
+
+<h1>Actualizar Huesped</h1>
+
+<EditForm Model="@huesped" OnValidSubmit="UpdateUser">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="FechaIngreso" class="form-label">Fecha de Ingreso</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="huesped.FechaIngreso" />
+        </div>
+        <ValidationMessage For="@(() => huesped.FechaIngreso)" />
+    </div>
+    <div class="mb-3">
+        <label for="FechaSalida" class="form-label">Fecha de Salida</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="huesped.FechaSalida" />
+        </div>
+        <ValidationMessage For="@(() => huesped.FechaSalida)" />
+    </div>
+    <div class="mb-3">
+        <label for="CostoHospedaje" class="form-label">Costo de Hospedaje</label>
+        <div class="col-md-4">
+            <InputNumber class="form-control" @bind-Value="huesped.CostoHospedaje" />
+        </div>
+        <ValidationMessage For="@(() => huesped.CostoHospedaje)" />
+    </div>
+    <div class="mb-3">
+        <label for="idMascota" class="form-label">idMascota</label>
+        <div class="col-md-4">
+            <InputNumber class="form-control" @bind-Value="huesped.idMascota" />
+        </div>
+        <ValidationMessage For="@(() => huesped.idMascota)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public int idHuesped { get; set; }
+
+    protected HuespedEntity huesped = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        string apiUrl = "https://localhost:7172/api/huespedes/get-huespedes-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        var huespedesLists = JsonConvert.DeserializeObject<List<HuespedEntity>>(responseBodyJson);
+
+        huesped = huespedesLists.Where(x => x.idHuesped == idHuesped).FirstOrDefault();
+    }
+
+    protected async Task UpdateUser()
+    {
+        string apiUrl = "https://localhost:7172/api/huespedes/update-huesped";
+
+        if (huesped.idHuesped < 1)
+        {
+            return;
+        }
+
+        await Http.PostAsJsonAsync(apiUrl, huesped);
+        NavigationManager.NavigateTo("/huespedes-list");
+    }
+
+    protected async Task Cancel() { }
+}

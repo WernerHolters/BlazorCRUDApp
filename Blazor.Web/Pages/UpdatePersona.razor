@@ -1,0 +1,75 @@
+﻿@page "/update-persona/{idPersona:int}"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Actualizar Persona</PageTitle>
+
+<h1>Actualizar Persona</h1>
+
+<EditForm Model="@persona" OnValidSubmit="UpdateUser">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label for="CI" class="form-label">CI</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="persona.CI" />
+        </div>
+        <ValidationMessage For="@(() => persona.CI)" />
+    </div>
+    <div class="mb-3">
+        <label for="Nombre" class="form-label">Nombre</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="persona.Nombre" />
+        </div>
+        <ValidationMessage For="@(() => persona.Nombre)" />
+    </div>
+    <div class="mb-3">
+        <label for="Telefono" class="form-label">Telefono</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="persona.Telefono" />
+        </div>
+        <ValidationMessage For="@(() => persona.Telefono)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int idPersona { get; set; }
+
+    protected PersonaEntity persona = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        string apiUrl = "https://localhost:7172/api/personas/get-personas-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        var personasLists = JsonConvert.DeserializeObject<List<PersonaEntity>>(responseBodyJson);
+
+        persona = personasLists.Where(x => x.idPersona == idPersona).FirstOrDefault();
+    }
+
+    protected async Task UpdateUser()
+    {
+        string apiUrl = "https://localhost:7172/api/personas/update-persona";
+
+
+        if (persona.idPersona < 1)
+        {
+            return;
+        }
+
+        await Http.PostAsJsonAsync(apiUrl, persona);
+        NavigationManager.NavigateTo("/personas-list");
+    }
+
+    protected async Task Cancel() { }
+}

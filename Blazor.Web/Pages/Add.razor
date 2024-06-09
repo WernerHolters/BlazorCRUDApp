@@ -1,0 +1,54 @@
+﻿@page "/add"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Agregar</PageTitle>
+
+<h1>Agregar:</h1>
+
+<button type="button" @onclick="(async () => await NavigateToAddCliente())" class="btn btn-primary btn-lg btn-block">
+    Cliente
+</button>
+<button type="button" @onclick="(async () => await NavigateToAddPersona())" class="btn btn-success btn-lg btn-block">
+    Persona
+</button>
+<button type="button" @onclick="(async () => await NavigateToAddMascota())" class="btn btn-danger btn-lg btn-block">
+    Mascota  
+</button>
+<button type="button" @onclick="(async () => await NavigateToAddHuesped())" class="btn btn-secondary btn-lg btn-block">
+    Huesped
+</button>
+     
+
+@code {
+
+    protected async Task NavigateToAddCliente()
+    {
+        string pageURl = "add-cliente/";
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+
+    protected async Task NavigateToAddPersona()
+    {
+        string pageURl = "add-persona/";
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+
+    protected async Task NavigateToAddMascota()
+    {
+        string pageURl = "add-mascota/";
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+
+    protected async Task NavigateToAddHuesped()
+    {
+        string pageURl = "add-huesped/";
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+}

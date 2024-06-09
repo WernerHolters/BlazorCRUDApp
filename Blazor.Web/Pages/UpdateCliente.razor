@@ -1,0 +1,82 @@
+﻿@page "/update-cliente/{idCliente:int}"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Actualizar Cliente</PageTitle>
+
+<h1>Actualizar Cliente</h1>
+
+<EditForm Model="@cliente" OnValidSubmit="UpdateUser">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label for="PrimerApellido" class="form-label">Primer Apellido</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="cliente.PrimerApellido" />
+        </div>
+        <ValidationMessage For="@(() => cliente.PrimerApellido)" />
+    </div>
+    <div class="mb-3">
+        <label for="CuentaBanco" class="form-label">Cuenta Banco</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="cliente.CuentaBanco" />
+        </div>
+        <ValidationMessage For="@(() => cliente.CuentaBanco)" />
+    </div>
+    <div class="mb-3">
+        <label for="Direccion" class="form-label">Direccion</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="cliente.Direccion" />
+        </div>
+        <ValidationMessage For="@(() => cliente.Direccion)" />
+    </div>
+    <div class="mb-3">
+        <label for="Telefono" class="form-label">Telefono</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="cliente.Telefono" />
+        </div>
+        <ValidationMessage For="@(() => cliente.Telefono)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int idCliente { get; set; }
+
+    protected ClienteEntity cliente = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        string apiUrl = "https://localhost:7172/api/clientes/get-clientes-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        var clientesLists = JsonConvert.DeserializeObject<List<ClienteEntity>>(responseBodyJson);
+
+        cliente = clientesLists.Where(x => x.idCliente == idCliente).FirstOrDefault();
+    }
+
+    protected async Task UpdateUser()
+    {
+        string apiUrl = "https://localhost:7172/api/clientes/update-cliente";
+
+
+        if (cliente.idCliente < 1)
+        {
+            return;
+        }
+
+        await Http.PostAsJsonAsync(apiUrl, cliente);
+        NavigationManager.NavigateTo("/clientes-list");
+    }
+
+    protected async Task Cancel() { }
+}

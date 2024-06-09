@@ -1,0 +1,77 @@
+﻿@page "/huespedes-list"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Huespedes</PageTitle>
+
+<h1>Lista de Huespedes</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>idHuesped</th>
+                <th>Fecha de Ingreso</th>
+                <th>Fecha de Salida</th>
+                <th>Costo del Hospedaje</th>
+                <th>idMascota</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var std in huespedesLists)
+        {
+            <tr>
+                <td>@std.idHuesped</td>
+                <td>@std.FechaIngreso.ToShortDateString()</td>
+                <td>@std.FechaSalida.ToShortDateString()</td>
+                <td>@std.CostoHospedaje</td>
+                <td>@std.idMascota</td>
+                <td>
+                    <button type="button" @onclick="(async () => await NavigateToUpdateHuesped(std.idHuesped))" class="btn btn-primary">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                    <button type="button" @onclick="(async () => await DeleteHuesped(std.idHuesped))" class="btn btn-danger">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+@code {
+
+    protected List<HuespedEntity> huespedesLists = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetHuespedesList();
+    }
+
+    protected async Task GetHuespedesList()
+    {
+        string apiUrl = "https://localhost:7172/api/huespedes/get-huespedes-list"; // aqui llama a la API
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        huespedesLists = JsonConvert.DeserializeObject<List<HuespedEntity>>(responseBodyJson);
+    }
+
+    protected async Task DeleteHuesped(int idHuesped)
+    {
+        string apiUrl = "https://localhost:7172/api/huesped/delete-huesped/" + idHuesped;
+
+        await Http.DeleteAsync(apiUrl);
+
+        NavigationManager.NavigateTo("/add"); // te lleva a add
+    }
+
+    protected async Task NavigateToUpdateHuesped(int idHuesped)
+    {
+        string pageURl = "update-huesped/" + idHuesped;         // si le das al boton te llava a UpdateMascota.razor
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+}
