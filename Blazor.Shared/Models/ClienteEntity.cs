@@ -10,6 +10,7 @@ namespace Blazor.Shared.Models
     public class ClienteEntity
     {
         public int idCliente { get; set; }
+        
         [Required(ErrorMessage = "Required")]
         public string PrimerApellido { get; set; }
         [Required(ErrorMessage = "Required")]

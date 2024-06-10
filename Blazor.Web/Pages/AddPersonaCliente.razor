@@ -1,0 +1,106 @@
+﻿@page "/add-persona-cliente"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Asociar Persona con Cliente</PageTitle>
+
+<h1>Asociar Persona con Cliente</h1>
+
+<EditForm Model="@personacliente" OnValidSubmit="SaveUser">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="FechaAsociacion" class="form-label">Fecha de Asociacion</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="personacliente.FechaAsociacion" />
+        </div>
+        <ValidationMessage For="@(() => personacliente.FechaAsociacion)" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">ID de la Persona</label>
+        <div class="col-md-4">
+            <InputSelect class="form-select" @bind-Value="personacliente.idPersona">
+                <option value="0">--- Seleccionar ---</option>
+                @foreach (var item in personasLists)
+                {
+                    <option value="@item.idPersona">@item.Nombre</option>
+                }
+            </InputSelect>
+        </div>
+        <ValidationMessage For="@(() => personacliente.idPersona)"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">ID del Cliente</label>
+        <div class="col-md-4">
+            <InputSelect class="form-select" @bind-Value="personacliente.idCliente">
+                <option value="0">--- Seleccionar ---</option>
+                @foreach (var item in clientesLists)
+                {
+                    <option value="@item.idCliente">@item.PrimerApellido</option>
+                }
+            </InputSelect>
+        </div>
+        <ValidationMessage For="@(() => personacliente.idCliente)"></ValidationMessage>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+
+@code {
+
+    protected PersonaClienteEntity personacliente = new();
+
+    protected async Task SaveUser()
+    {
+        string apiUrl = "https://localhost:7172/api/persona-cliente/post-persona-cliente";
+
+
+        if (personacliente.idPersona == 0)
+        {
+            return;
+        }
+
+        await Http.PostAsJsonAsync(apiUrl, personacliente);
+        NavigationManager.NavigateTo("/clientes-list");
+    }
+
+    protected async Task Cancel()
+    {
+        NavigationManager.NavigateTo("/add");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPersonasList();
+        await GetClientesList();
+    }
+    // obtener lista de personas
+    protected List<PersonaEntity> personasLists = new();
+
+    protected async Task GetPersonasList()
+    {
+        string apiUrl = "https://localhost:7172/api/personas/get-personas-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        personasLists = JsonConvert.DeserializeObject<List<PersonaEntity>>(responseBodyJson);
+    }
+    // obtener lista de clientes
+    protected List<ClienteEntity> clientesLists = new();
+
+    protected async Task GetClientesList()
+    {
+        string apiUrl = "https://localhost:7172/api/clientes/get-clientes-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        clientesLists = JsonConvert.DeserializeObject<List<ClienteEntity>>(responseBodyJson);
+    }
+}

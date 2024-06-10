@@ -20,7 +20,18 @@
 <button type="button" @onclick="(async () => await NavigateToAddHuesped())" class="btn btn-secondary btn-lg btn-block">
     Huesped
 </button>
-     
+<h1></h1>
+<h1>Asociar:</h1>
+
+<button type="button" @onclick="(async () => await NavigateToAddPersonaCliente())" class="btn btn-primary btn-lg btn-block">
+    PersonaCliente
+</button>
+<button type="button" @onclick="(async () => await NavigateToAddHuespedServicio())" class="btn btn-success btn-lg btn-block">
+    HuespedServicio
+</button>
+<button type="button" @onclick="(async () => await NavigateToAddMascotaVacuna())" class="btn btn-danger btn-lg btn-block">
+    MascotaVacuna
+</button>
 
 @code {
 
@@ -48,6 +59,28 @@
     protected async Task NavigateToAddHuesped()
     {
         string pageURl = "add-huesped/";
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+
+
+    protected async Task NavigateToAddPersonaCliente()
+    {
+        string pageURl = "add-persona-cliente/";
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+
+    protected async Task NavigateToAddHuespedServicio()
+    {
+        string pageURl = "/";
+
+        NavigationManager.NavigateTo(pageURl);
+    }
+
+    protected async Task NavigateToAddMascotaVacuna()
+    {
+        string pageURl = "/";
 
         NavigationManager.NavigateTo(pageURl);
     }

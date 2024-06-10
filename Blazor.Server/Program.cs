@@ -3,6 +3,7 @@ using Blazor.Shared.Services.Mascota;
 using Blazor.Shared.Services.Cliente;
 using Blazor.Shared.Services.Persona;
 using Blazor.Shared.Services.Huesped;
+using Blazor.Shared.Services.PersonaCliente;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -41,6 +42,7 @@ builder.Services.AddSingleton<IPersonaServices, PersonaServices>();
 builder.Services.AddSingleton<IClienteServices, ClienteServices>();
 builder.Services.AddSingleton<IMascotaServices, MascotaServices>();
 builder.Services.AddSingleton<IHuespedServices, HuespedServices>();
+builder.Services.AddSingleton<IPersonaClienteServices, PersonaClienteServices>();
 
 var app = builder.Build();
 

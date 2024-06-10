@@ -7,18 +7,13 @@ using System.Threading.Tasks;
 
 namespace Blazor.Shared.Models
 {
-    public class PersonaEntity
+    public class PersonaClienteEntity
     {
-        public int idPersona { get; set; }
-
         [Required(ErrorMessage = "Required")]
-        public string CI { get; set; }
-
+        public DateTime FechaAsociacion { get; set; }
         [Required(ErrorMessage = "Required")]
-        public string Nombre { get; set; }
-
+        public int idPersona { get; set; } // Llave foranea
         [Required(ErrorMessage = "Required")]
-        public string Telefono { get; set; }
+        public int idCliente { get; set; } // Llave foranea
     }
 }
-

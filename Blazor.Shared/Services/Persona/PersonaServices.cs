@@ -19,8 +19,7 @@ namespace Blazor.Shared.Services.Persona
         {
             connectionString = _configuration.GetConnectionString("DBConnection");
         }
-
-
+ 
         public IEnumerable<PersonaEntity> GetAllPersonas()
         {
             List<PersonaEntity> lstPersona = new List<PersonaEntity>();
