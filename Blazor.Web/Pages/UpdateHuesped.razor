@@ -32,12 +32,19 @@
         <ValidationMessage For="@(() => huesped.CostoHospedaje)" />
     </div>
     <div class="mb-3">
-        <label for="idMascota" class="form-label">idMascota</label>
+        <label class="form-label">ID de la Mascota</label>
         <div class="col-md-4">
-            <InputNumber class="form-control" @bind-Value="huesped.idMascota" />
+            <InputSelect class="form-select" @bind-Value="huesped.idMascota">
+                <option value="0">--- Seleccionar ---</option>
+                @foreach (var item in mascotasLists)
+                {
+                    <option value="@item.idMascota">@item.Nombre</option>
+                }
+            </InputSelect>
         </div>
-        <ValidationMessage For="@(() => huesped.idMascota)" />
+        <ValidationMessage For="@(() => huesped.idMascota)"></ValidationMessage>
     </div>
+
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Save</button>
         <button class="btn btn-light" @onclick="Cancel">Cancel</button>
@@ -78,4 +85,21 @@
     }
 
     protected async Task Cancel() { }
+
+    protected List<MascotaEntity> mascotasLists = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetMascotasList();
+    }
+
+    protected async Task GetMascotasList()
+    {
+        string apiUrl = "https://localhost:7172/api/mascotas/get-mascotas-list"; // aqui llama a la API
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        mascotasLists = JsonConvert.DeserializeObject<List<MascotaEntity>>(responseBodyJson);
+    }
 }
