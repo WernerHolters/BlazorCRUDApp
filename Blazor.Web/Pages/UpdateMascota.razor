@@ -53,11 +53,17 @@
         <ValidationMessage For="@(() => mascota.PesoActual)" />
     </div>
     <div class="mb-3">
-        <label for="idCliente" class="form-label">ID del Cliente</label>
+        <label class="form-label">ID del Cliente</label>
         <div class="col-md-4">
-            <InputNumber class="form-control" @bind-Value="mascota.idCliente" />
+            <InputSelect class="form-select" @bind-Value="mascota.idCliente">
+                <option value="0">--- Seleccionar ---</option>
+                @foreach (var item in clientesLists)
+                {
+                    <option value="@item.idCliente">@item.PrimerApellido</option>
+                }
+            </InputSelect>
         </div>
-        <ValidationMessage For="@(() => mascota.idCliente)" />
+        <ValidationMessage For="@(() => mascota.idCliente)"></ValidationMessage>
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Save</button>
@@ -99,4 +105,21 @@
     }
 
     protected async Task Cancel() { }
+
+    protected List<ClienteEntity> clientesLists = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetClientesList();
+    }
+
+    protected async Task GetClientesList()
+    {
+        string apiUrl = "https://localhost:7172/api/clientes/get-clientes-list";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+        string responseBodyJson = await response.Content.ReadAsStringAsync();
+
+        clientesLists = JsonConvert.DeserializeObject<List<ClienteEntity>>(responseBodyJson);
+    }
 }
